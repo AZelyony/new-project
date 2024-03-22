@@ -20,7 +20,11 @@ git status
 # commit changes
 git commit -am "description message"
 
-# merge successful changes into the master branch, resolving conflicts if they arise
-git merge main
+# switch to main branch
+git checkout main
 
-#
+# merge successful changes into the master branch, resolving conflicts if they arise
+git merge development
+
+# push changes to the shared repository
+git push
