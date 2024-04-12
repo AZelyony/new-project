@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Перевіряємо, чи передано достатньо аргументів
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 <namespace> <resource_type>"
+    exit 1
+fi
+
+# Перевіряємо, чи $2 є допустимим значенням (pod або node)
+if [ "$2" != "pod" ] && [ "$2" != "node" ]; then
+    echo "Invalid resource type. Allowed values: pod, node."
+    exit 1
+fi
+
+# Встановлюємо значення змінних
+RESOURCE_TYPE="$2"
+NAMESPACE="$1"
+
+# Отримуємо статистику використання ресурсів з Kubernetes
+kubectl top $RESOURCE_TYPE -n $NAMESPACE | tail -n +2 | while read line
+do
+    # Виділяємо CPU та пам'ять з виводу
+    NAME=$(echo $line | awk '{print $1}')
+    CPU=$(echo $line | awk '{print $2}')
+    MEMORY=$(echo $line | awk '{print $3}')
+
+    # Виводимо статистику на консоль
+    echo "Resource: $RESOURCE_TYPE, Namespace: $NAMESPACE, Name: $NAME, CPU: $CPU, Memory: $MEMORY"
+done
